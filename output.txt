@@ -1,5 +1,5 @@
 Filled container. 
-Container have 4 elems.
+Container contains 4 elements.
 
 0: Truck with motor power = 50
 Load capacity is 800
@@ -14,5 +14,5 @@ Passenger capacity is 38
 Passenger capacity is 1500
 
 Empty container. 
-Container have 0 elems.
+Container contains 0 elements.
 
