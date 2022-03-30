@@ -12,12 +12,12 @@ void Container::In(ifstream& ifst) {
     Node* Temp;
 
     while (!ifst.eof()) {
-        Temp = new Node(); 
+        Temp = new Node();       
         Temp->Next = NULL;
         Temp->Prev = NULL;
 
         
-        if (!Len) { 
+        if (!Len) {
             if ((Head->Cont = Car::In_Car(ifst))) {
                 Tail = Head;
                 Len++;
@@ -106,6 +106,11 @@ Car* Car::In_Car(ifstream& ifst) {
         C = new Bus;
 
         ifst >> C->Motor_power; 
+
+    else if (K == 3) {
+        C = new Passenger_car;
+
+        ifst >> C->Motor_power;
     }
     else {
         return 0;
@@ -143,6 +148,16 @@ void Bus::In_Data(ifstream& ifst) {
 
 void Bus::Out_Data(int Motor_power, ofstream& ofst) {
     ofst << "Bus with motor power = " << Motor_power << endl;
+    ofst << "Passenger capacity is " << Passenger_cap << endl << endl;
+}
+
+void Passenger_car::In_Data(ifstream& ifst) {
+    ifst >> Max_speed;
+}
+
+void Passenger_car::Out_Data(int Motor_power, ofstream& ofst) {
+    ofst << "Passenger car with motor power = " << Motor_power << endl;
+    ofst << "Max speed is " << Max_speed << endl << endl;
     ofst << "Passenger capacity is " << Passenger_cap << endl;
 }
 
