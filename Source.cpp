@@ -111,6 +111,7 @@ Car* Car::In_Car(ifstream& ifst) {
         C = new Passenger_car;
 
         ifst >> C->Motor_power;
+
     }
     else {
         return 0;

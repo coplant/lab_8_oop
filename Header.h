@@ -42,7 +42,6 @@ public:
 };
 
 
-
 class Passenger_car : public Car {
     short int Max_speed; 
 public:
@@ -50,8 +49,6 @@ public:
     void Out_Data(int Motor_power, ofstream& ofst);
     Passenger_car() {};
 };
-
-
 struct Node {
     Node* Next, * Prev; 
     Car* Cont; 
@@ -67,7 +64,6 @@ public:
 
     void Clear(); 
     void Sort(); 
-
     Container(); 
     ~Container() { Clear(); }
 };
