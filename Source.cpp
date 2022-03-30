@@ -68,6 +68,29 @@ void Container::Clear() {
     Len = 0;
 }
 
+void Container::Sort() {
+    if (Len > 1) {
+        Node* First = Head;
+        Node* Second = Head->Next;
+        Node* Temp = new Node;
+
+        for (int i = 0; i < Len - 1; i++) {
+            for (int j = 0; j < Len - i - 1; j++) {
+                if (First->Cont->Compare(Second->Cont)) {
+                    Temp->Cont = First->Cont;
+                    First->Cont = Second->Cont;
+                    Second->Cont = Temp->Cont;
+                }
+
+                Second = Second->Next;
+            }
+
+            First = First->Next;
+            Second = First->Next;
+        }
+    }
+}
+
 Car* Car::In_Car(ifstream& ifst) {
     Car* C;
     int K;
@@ -95,6 +118,10 @@ Car* Car::In_Car(ifstream& ifst) {
 
 int Car::Get_Motor_power() {
     return Motor_power;
+}
+
+bool Car::Compare(Car* Other) {
+    return Load_to_capacity_ratio(Motor_power) > Other->Load_to_capacity_ratio(Other->Get_Motor_power());
 }
 
 void Truck::In_Data(ifstream& ifst) {
