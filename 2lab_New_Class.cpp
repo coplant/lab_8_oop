@@ -1,4 +1,4 @@
-﻿#include "Header.h"
+#include "Header.h"
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
@@ -17,7 +17,9 @@ int main(int argc, char* argv[]) {
 
     C.In(ifst); 
 
-    ofst << "Filled container. " << endl;
+    C.Sort(); 
+
+    ofst << "Filled and sorted container. " << endl;
 
     C.Out(ofst); 
 
