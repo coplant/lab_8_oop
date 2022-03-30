@@ -1,83 +1,68 @@
-#ifndef CONTAINER_H
-#define CONTAINER_H
+#ifndef HEADER_H
+#define HEADER_H
 
 #include <fstream>
+#include <iostream>
+#include <string>
 
 using namespace std;
 
 
-enum Key {
-    TRUCK, 
-    BUS, 
-    PASSENGER_CAR 
-};
-
-
-struct Car {
-    Key K; 
-};
-
-
-Car* In_Car(ifstream& ifst);
-
-
-void Out_Car(Car* C, ofstream& ofst);
-
-
-struct Truck {
-    Key K; 
+class Car {
     int Motor_power; 
+public:
+    int Get_Motor_power();
+
+    static Car* In_Car(ifstream& ifst); 
+    virtual void In_Data(ifstream& ifst) = 0; 
+    virtual void Out_Data(int Motor_power, ofstream& ofst) = 0; 
+protected:
+    Car() {};
+};
+
+
+class Truck : public Car {
     int Load_cap; 
+public:
+    void In_Data(ifstream& ifst); 
+    void Out_Data(int Motor_power, ofstream& ofst); 
+    Truck() {};
 };
 
 
-Truck* In_Truck(ifstream& ifst);
-
-
-void Out_Truck(Truck* T, ofstream& ofst);
-
-
-struct Bus {
-    Key K; 
-    int Motor_power; 
+class Bus : public Car {
     short int Passenger_cap; 
+public:
+    void In_Data(ifstream& ifst);
+    void Out_Data(int Motor_power, ofstream& ofst); 
+    Bus() {};
 };
 
 
-Bus* In_Bus(ifstream& ifst);
-
-
-void Out_Bus(Bus* B, ofstream& ofst);
-
-
-struct Passenger_car {
-    Key K; 
-    int Motor_power; 
+class Passenger_car : public Car {
     short int Max_speed; 
+public:
+    void In_Data(ifstream& ifst); 
+    void Out_Data(int Motor_power, ofstream& ofst);
+    Passenger_car() {};
 };
 
 
-Passenger_car* In_Passenger_car(ifstream& ifst);
-
-
-void Out_Passenger_car(Passenger_car* P_c, ofstream& ofst);
-
-
-struct Container {
-    int Len; 
+struct Node {
+    Node* Next, * Prev; 
     Car* Cont; 
-    Container* Prev; 
-    Container* Next; 
 };
 
 
-void Init_Container(Container* Head, Container* Tail);
+class Container {
+    Node* Head, *Tail; 
+    int Len; 
+public:
+    void In(ifstream& ifst);
+    void Out(ofstream& ofst); 
+    void Clear();
+    Container(); 
+    ~Container() { Clear(); }
+};
 
-
-void In_Container(Container* Head, Container* Tail, ifstream& ifst);
-
-void Out_Container(Container* Head, ofstream& ofst);
-
-void Clear_Container(Container* Head, Container* Tail);
-
-#endif //CONTAINER_H
+#endif //HEADER_H
