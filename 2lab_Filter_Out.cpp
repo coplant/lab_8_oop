@@ -1,8 +1,4 @@
-﻿#include <iostream>
-
-#include "Header.h"
-
-using namespace std;
+﻿#include "Header.h"
 
 int main(int argc, char* argv[]) {
     if (argc != 3) {
@@ -13,31 +9,28 @@ int main(int argc, char* argv[]) {
     }
 
     ifstream ifst(argv[1]);
-
     ofstream ofst(argv[2]);
 
     cout << "Start" << endl;
 
-    Container* Head = new Container(); 
-    Container* Tail = new Container(); 
+    Container C; 
 
-    Init_Container(Head, Tail); 
-
-    In_Container(Head, Tail, ifst); 
+    C.In(ifst); 
 
     ofst << "Filled container. " << endl;
 
-    Out_Container(Head, ofst); 
+    C.Out(ofst); 
 
-    Out_Only_Truck(Head, ofst); 
+    C.Out_Only_Truck(ofst); 
 
-    Clear_Container(Head, Tail);
+    C.Clear(); 
 
     ofst << "Empty container. " << endl;
 
-    Out_Container(Head, ofst); 
+    C.Out(ofst); 
 
     cout << "Stop" << endl;
+
     system("pause");
     return 0;
 }
