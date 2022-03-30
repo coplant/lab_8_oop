@@ -1,86 +1,62 @@
-#ifndef CONTAINER_H
-#define CONTAINER_H
+#ifndef HEADER_H
+#define HEADER_H
 
 #include <fstream>
+#include <iostream>
+#include <string>
 
 using namespace std;
 
 
-enum Key {
-    TRUCK, 
-    BUS 
-};
-
-
-struct Car {
-    Key K; 
-};
-
-
-Car* In_Car(ifstream& ifst);
-
-
-void Out_Car(Car* C, ofstream& ofst);
-
-
-double Load_to_capacity_ratio(Car* C);
-
-
-struct Truck {
-    Key K; 
+class Car {
     int Motor_power; 
+public:
+    int Get_Motor_power();
+
+    static Car* In_Car(ifstream& ifst); 
+    virtual void In_Data(ifstream& ifst) = 0; 
+    virtual void Out_Data(int Motor_power, ofstream& ofst) = 0; 
+    virtual double Load_to_capacity_ratio(int Motor_power) = 0; 
+    bool Compare(Car* Other); 
+protected:
+    Car() {};
+};
+
+
+class Truck : public Car {
     int Load_cap; 
+public:
+    void In_Data(ifstream& ifst); 
+    void Out_Data(int Motor_power, ofstream& ofst); 
+    double Load_to_capacity_ratio(int Motor_power); 
+    Truck() {};
 };
 
-
-Truck* In_Truck(ifstream& ifst);
-
-
-void Out_Truck(Truck* T, ofstream& ofst);
-
-
-double Load_to_capacity_ratio_Truck(Truck* T);
-
-
-struct Bus {
-    Key K; 
-    int Motor_power;
+class Bus : public Car {
     short int Passenger_cap; 
+public:
+    void In_Data(ifstream& ifst); 
+    void Out_Data(int Motor_power, ofstream& ofst); 
+    double Load_to_capacity_ratio(int Motor_power); 
+    Bus() {};
 };
 
-
-Bus* In_Bus(ifstream& ifst);
-
-
-void Out_Bus(Bus* B, ofstream& ofst);
-
-
-double Load_to_capacity_ratio_Bus(Bus* B);
-
-
-struct Container {
-    int Len; 
+struct Node {
+    Node* Next, * Prev; 
     Car* Cont; 
-    Container* Prev; 
-    Container* Next; 
 };
 
 
-void Init_Container(Container* Head, Container* Tail);
+class Container {
+    Node* Head, *Tail; 
+    int Len; 
+public:
+    void In(ifstream& ifst); 
+    void Out(ofstream& ofst); 
+    void Clear(); 
+    void Sort(); 
+    Container(); 
+    ~Container() { Clear(); } 
+};
 
-
-void In_Container(Container* Head, Container* Tail, ifstream& ifst);
-
-
-void Out_Container(Container* Head, ofstream& ofst);
-
-
-void Clear_Container(Container* Head, Container* Tail);
-
-
-bool Compare(Container* First, Container* Second);
-
-
-void Sort(Container* Head);
-
-#endif //CONTAINER_H
+#endif //HEADER_H
