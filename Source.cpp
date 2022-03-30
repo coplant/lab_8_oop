@@ -12,18 +12,18 @@ void Container::In(ifstream& ifst) {
     Node* Temp;
 
     while (!ifst.eof()) {
-        Temp = new Node();       
+        Temp = new Node(); 
         Temp->Next = NULL;
         Temp->Prev = NULL;
 
         
-        if (!Len) {
+        if (!Len) { 
             if ((Head->Cont = Car::In_Car(ifst))) {
                 Tail = Head;
                 Len++;
             }
         }
-        else {
+        else { 
             if ((Temp->Cont = Car::In_Car(ifst))) {
                 Tail->Next = Temp;
                 Temp->Prev = Tail;
@@ -91,6 +91,21 @@ void Container::Sort() {
     }
 }
 
+void Container::Out_Only_Truck(ofstream& ofst) {
+    ofst << "Only Trucks." << endl << endl;
+
+    Node* Temp = Head;
+
+    for (int i = 0; i < Len; i++) {
+        ofst << i << ": ";
+        Temp->Cont->Out_Only_Truck(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
+
+        if (Temp->Next) {
+            Temp = Temp->Next;
+        }
+    }
+}
+
 Car* Car::In_Car(ifstream& ifst) {
     Car* C;
     int K;
@@ -102,19 +117,15 @@ Car* Car::In_Car(ifstream& ifst) {
     }
     else if (K == 2) {
         C = new Bus;
-
-        ifst >> C->Motor_power; 
-
+    }
     else if (K == 3) {
         C = new Passenger_car;
-
-        ifst >> C->Motor_power;
     }
     else {
         return 0;
     }
 
-    ifst >> C->Motor_power;
+    ifst >> C->Motor_power; 
 
     C->In_Data(ifst);
 
@@ -127,13 +138,16 @@ int Car::Get_Motor_power() {
     return Motor_power;
 }
 
-
 double Car::Get_Fuel() {
     return Fuel;
+}
 
 bool Car::Compare(Car* Other) {
     return Load_to_capacity_ratio(Motor_power) > Other->Load_to_capacity_ratio(Other->Get_Motor_power());
+}
 
+void Car::Out_Only_Truck(int Motor_power, double Fuel, ofstream& ofst) {
+    ofst << endl;
 }
 
 void Truck::In_Data(ifstream& ifst) {
@@ -141,15 +155,17 @@ void Truck::In_Data(ifstream& ifst) {
 }
 
 void Truck::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
-    ofst << "Truck with motor power = " << Motor_power << endl;
-    ofst << "Load capacity is " << Load_cap << endl;
-    ofst << "Fuel is " << Fuel << endl << endl;
-
+    ofst << "It's a Truck with motor power = " << Motor_power << endl;
+    ofst << "Its load capacity is " << Load_cap << endl;
+    ofst << "Its fuel is " << Fuel << endl;
 }
 
 double Truck::Load_to_capacity_ratio(int Motor_power) {
     return (double)Load_cap / (double)Motor_power;
+}
 
+void Truck::Out_Only_Truck(int Motor_power, double Fuel, ofstream& ofst) {
+    Out_Data(Motor_power, Fuel, ofst);
 }
 
 void Bus::In_Data(ifstream& ifst) {
@@ -157,23 +173,25 @@ void Bus::In_Data(ifstream& ifst) {
 }
 
 void Bus::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
-    ofst << "Bus with motor power = " << Motor_power << endl;
-    ofst << "Passenger capacity is " << Passenger_cap << endl;
-    ofst << "Fuel is " << Fuel << endl << endl;
-    ofst << "Passenger capacity is " << Passenger_cap << endl << endl;
+    ofst << "It's a Bus with motor power = " << Motor_power << endl;
+    ofst << "Its passenger capacity is " << Passenger_cap << endl;
+    ofst << "Its fuel is " << Fuel << endl;
+}
+
+double Bus::Load_to_capacity_ratio(int Motor_power) {
+    return (double)(75 * Passenger_cap) / (double)Motor_power;
 }
 
 void Passenger_car::In_Data(ifstream& ifst) {
     ifst >> Max_speed;
 }
 
-void Passenger_car::Out_Data(int Motor_power, ofstream& ofst) {
-    ofst << "Passenger car with motor power = " << Motor_power << endl;
-    ofst << "Max speed is " << Max_speed << endl << endl;
-    ofst << "Passenger capacity is " << Passenger_cap << endl;
+void Passenger_car::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
+    ofst << "It's a Passenger car with motor power = " << Motor_power << endl;
+    ofst << "Its Max speed is " << Max_speed << endl;
+    ofst << "Its fuel is " << Fuel << endl;
 }
 
-double Bus::Load_to_capacity_ratio(int Motor_power) {
-    return (double)(75 * Passenger_cap) / (double)Motor_power;
-
+double Passenger_car::Load_to_capacity_ratio(int Motor_power) {
+    return (double)(75 * 4) / (double)Motor_power; 
 }
