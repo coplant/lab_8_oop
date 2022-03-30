@@ -23,7 +23,7 @@ void Container::In(ifstream& ifst) {
                 Len++;
             }
         }
-        else { 
+        else {
             if ((Temp->Cont = Car::In_Car(ifst))) {
                 Tail->Next = Temp;
                 Temp->Prev = Tail;
@@ -42,7 +42,7 @@ void Container:: Out(ofstream& ofst) {
 
     for (int i = 0; i < Len; i++) {
         ofst << i << ": ";
-        Temp->Cont->Out_Data(Temp->Cont->Get_Motor_power(), ofst);
+        Temp->Cont->Out_Data(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
 
         ofst << "Load to capacity ratio is = " << Temp->Cont->Load_to_capacity_ratio(Temp->Cont->Get_Motor_power()) << endl << endl;
 
@@ -99,8 +99,6 @@ Car* Car::In_Car(ifstream& ifst) {
     
     if (K == 1) {
         C = new Truck;
-
-        ifst >> C->Motor_power; 
     }
     else if (K == 2) {
         C = new Bus;
@@ -111,13 +109,16 @@ Car* Car::In_Car(ifstream& ifst) {
         C = new Passenger_car;
 
         ifst >> C->Motor_power;
-
     }
     else {
         return 0;
     }
 
+    ifst >> C->Motor_power;
+
     C->In_Data(ifst);
+
+    ifst >> C->Fuel; 
 
     return C;
 }
@@ -126,29 +127,39 @@ int Car::Get_Motor_power() {
     return Motor_power;
 }
 
+
+double Car::Get_Fuel() {
+    return Fuel;
+
 bool Car::Compare(Car* Other) {
     return Load_to_capacity_ratio(Motor_power) > Other->Load_to_capacity_ratio(Other->Get_Motor_power());
+
 }
 
 void Truck::In_Data(ifstream& ifst) {
     ifst >> Load_cap;
 }
 
-void Truck::Out_Data(int Motor_power, ofstream& ofst) {
+void Truck::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
     ofst << "Truck with motor power = " << Motor_power << endl;
     ofst << "Load capacity is " << Load_cap << endl;
+    ofst << "Fuel is " << Fuel << endl << endl;
+
 }
 
 double Truck::Load_to_capacity_ratio(int Motor_power) {
     return (double)Load_cap / (double)Motor_power;
+
 }
 
 void Bus::In_Data(ifstream& ifst) {
     ifst >> Passenger_cap;
 }
 
-void Bus::Out_Data(int Motor_power, ofstream& ofst) {
+void Bus::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
     ofst << "Bus with motor power = " << Motor_power << endl;
+    ofst << "Passenger capacity is " << Passenger_cap << endl;
+    ofst << "Fuel is " << Fuel << endl << endl;
     ofst << "Passenger capacity is " << Passenger_cap << endl << endl;
 }
 
@@ -164,4 +175,5 @@ void Passenger_car::Out_Data(int Motor_power, ofstream& ofst) {
 
 double Bus::Load_to_capacity_ratio(int Motor_power) {
     return (double)(75 * Passenger_cap) / (double)Motor_power;
+
 }
