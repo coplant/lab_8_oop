@@ -35,12 +35,20 @@ public:
 class Bus : public Car {
     short int Passenger_cap; 
 public:
-    void In_Data(ifstream& ifst); 
+    void In_Data(ifstream& ifst);
     void Out_Data(int Motor_power, ofstream& ofst); 
     double Load_to_capacity_ratio(int Motor_power); 
     Bus() {};
 };
 
+
+class Passenger_car : public Car {
+    short int Max_speed; 
+public:
+    void In_Data(ifstream& ifst); 
+    void Out_Data(int Motor_power, ofstream& ofst);
+    Passenger_car() {};
+};
 struct Node {
     Node* Next, * Prev; 
     Car* Cont; 
@@ -51,12 +59,13 @@ class Container {
     Node* Head, *Tail; 
     int Len; 
 public:
-    void In(ifstream& ifst); 
+    void In(ifstream& ifst);
     void Out(ofstream& ofst); 
+
     void Clear(); 
     void Sort(); 
     Container(); 
-    ~Container() { Clear(); } 
+    ~Container() { Clear(); }
 };
 
 #endif //HEADER_H

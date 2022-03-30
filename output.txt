@@ -1,13 +1,13 @@
-Filled container. 
+Filled and sorted container. 
 Container contains 4 elements.
 
-0: Truck with motor power = 50
-Load capacity is 800
-Load to capacity ratio is = 16
-
-1: Truck with motor power = 150
+0: Truck with motor power = 150
 Load capacity is 464
 Load to capacity ratio is = 3.09333
+
+1: Truck with motor power = 50
+Load capacity is 800
+Load to capacity ratio is = 16
 
 2: Bus with motor power = 155
 Passenger capacity is 38
