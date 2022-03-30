@@ -17,6 +17,7 @@ public:
     virtual void In_Data(ifstream& ifst) = 0; 
     virtual void Out_Data(int Motor_power, ofstream& ofst) = 0; 
     virtual double Load_to_capacity_ratio(int Motor_power) = 0; 
+    bool Compare(Car* Other); 
 protected:
     Car() {};
 };
@@ -31,7 +32,6 @@ public:
     Truck() {};
 };
 
-
 class Bus : public Car {
     short int Passenger_cap; 
 public:
@@ -40,7 +40,6 @@ public:
     double Load_to_capacity_ratio(int Motor_power); 
     Bus() {};
 };
-
 
 struct Node {
     Node* Next, * Prev; 
@@ -55,6 +54,7 @@ public:
     void In(ifstream& ifst); 
     void Out(ofstream& ofst); 
     void Clear(); 
+    void Sort(); 
     Container(); 
     ~Container() { Clear(); } 
 };
