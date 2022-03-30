@@ -13,19 +13,21 @@ int main(int argc, char* argv[]) {
 
     cout << "Start" << endl;
 
-    Container C;
+    Container C; 
 
-    C.In(ifst);
-    
-    ofst << "Filled container. " << endl;
-    
-    C.Out(ofst);
+    C.In(ifst); 
 
-    C.Clear();
-    
+    C.Sort(); 
+
+    ofst << "Filled and sorted container. " << endl;
+
+    C.Out(ofst); 
+
+    C.Clear(); 
+
     ofst << "Empty container. " << endl;
-    
-    C.Out(ofst);
+
+    C.Out(ofst); 
 
     cout << "Stop" << endl;
 
