@@ -1,29 +1,30 @@
 #include "Header.h"
 
-void Init_Container(Container* Head, Container* Tail) {
+Container::Container() {
+    Head = Tail = new Node();
     Head->Cont = Tail->Cont = NULL;
-    Head->Next = Tail->Next = NULL; 
+    Head->Next = Tail->Next = NULL;
     Head->Prev = Tail->Prev = NULL;
-    Head->Len = Tail->Len = 0;
+    Len = 0;
 }
 
-void In_Container(Container* Head, Container* Tail, ifstream& ifst) {
-    Container* Temp;
-    int Len = 0; 
+void Container::In(ifstream& ifst) {
+    Node* Temp;
 
     while (!ifst.eof()) {
-        Temp = new Container(); 
+        Temp = new Node(); 
         Temp->Next = NULL;
         Temp->Prev = NULL;
+
         
-        if (!Len) {
-            if ((Head->Cont = In_Car(ifst))) {
+        if (!Len) { 
+            if ((Head->Cont = Car::In_Car(ifst))) {
                 Tail = Head;
                 Len++;
             }
         }
         else {
-            if ((Temp->Cont = In_Car(ifst))) {
+            if ((Temp->Cont = Car::In_Car(ifst))) {
                 Tail->Next = Temp;
                 Temp->Prev = Tail;
                 Tail = Temp;
@@ -31,25 +32,17 @@ void In_Container(Container* Head, Container* Tail, ifstream& ifst) {
             }
         }
     }
-
-   
-    for (int i = 0; i < Len; i++) {
-        Head->Len = Len;
-        if (Head->Next) {
-            Head = Head->Next;
-        }
-    }
 }
 
-void Out_Container(Container* Head, ofstream& ofst) {
-    ofst << "Container contains " << Head->Len
+void Container:: Out(ofstream& ofst) {
+    ofst << "Container contains " << Len
         << " elements." << endl << endl;
 
-    Container* Temp = Head; 
+    Node* Temp = Head;
 
-    for (int i = 0; i < Head->Len; i++) {
+    for (int i = 0; i < Len; i++) {
         ofst << i << ": ";
-        Out_Car(Temp->Cont, ofst);
+        Temp->Cont->Out_Data(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
 
         if (Temp->Next) {
             Temp = Temp->Next;
@@ -57,13 +50,12 @@ void Out_Container(Container* Head, ofstream& ofst) {
     }
 }
 
-void Clear_Container(Container* Head, Container* Tail) {
-    Container* Temp = Head;
-    
-    for (int i = 0; i < Head->Len; i++) {
+void Container::Clear() {
+    Node* Temp = Head;
+
+    for (int i = 0; i < Len; i++) {
         free(Temp->Cont);
-        Temp->Len = 0;
-        
+
         if (Temp->Next) {
             Temp = Temp->Next;
             free(Temp->Prev);
@@ -71,76 +63,58 @@ void Clear_Container(Container* Head, Container* Tail) {
 
     }
 
-    Head->Len = 0;
+    Len = 0;
 }
 
-Car* In_Car(ifstream& ifst) {
-    Car* C; 
+Car* Car::In_Car(ifstream& ifst) {
+    Car* C;
     int K;
 
-    ifst >> K; 
-
+    ifst >> K;
+    
     if (K == 1) {
-       
-        C = (Car*)In_Truck(ifst); 
-
-        C->K = TRUCK; 
-
-        return C;
+        C = new Truck;
     }
     else if (K == 2) {
-        C = (Car*)In_Bus(ifst); 
-
-        C->K = BUS; 
-
-        return C;
+        C = new Bus;
     }
     else {
         return 0;
     }
+
+    ifst >> C->Motor_power;
+
+    C->In_Data(ifst);
+
+    ifst >> C->Fuel; 
+
+    return C;
 }
 
-void Out_Car(Car* C, ofstream& ofst) {
-    if (C->K == TRUCK) {
-        Out_Truck((Truck*)C, ofst); 
-    }
-    else if (C->K == BUS) {
-        Out_Bus((Bus*)C, ofst); 
-    }
-    else {
-        ofst << "Incorrect element!" << endl;
-    }
+int Car::Get_Motor_power() {
+    return Motor_power;
 }
 
-Truck* In_Truck(ifstream& ifst) {
-    Truck* T = new Truck();
-
-    ifst >> T->Motor_power;
-    ifst >> T->Load_cap;
-    ifst >> T->Fuel;
-
-    return T;
+double Car::Get_Fuel() {
+    return Fuel;
 }
 
-
-void Out_Truck(Truck* T, ofstream& ofst) {
-    ofst << "Truck with motor power = " << T->Motor_power<< endl;
-    ofst << "Load capacity is " << T->Load_cap << endl;
-    ofst << "Fuel is " << T->Fuel << endl << endl;
+void Truck::In_Data(ifstream& ifst) {
+    ifst >> Load_cap;
 }
 
-Bus* In_Bus(ifstream& ifst) {
-    Bus* B = new Bus();
-
-    ifst >> B->Motor_power;
-    ifst >> B->Passenger_cap;
-    ifst >> B->Fuel;
-
-    return B;
+void Truck::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
+    ofst << "Truck with motor power = " << Motor_power << endl;
+    ofst << "Load capacity is " << Load_cap << endl;
+    ofst << "Fuel is " << Fuel << endl << endl;
 }
 
-void Out_Bus(Bus* B, ofstream& ofst) {
-    ofst << "Bus with motor power = " << B->Motor_power << endl;
-    ofst << "Passenger capacity is " << B->Passenger_cap << endl;
-    ofst << "Fuel is " << B->Fuel << endl << endl;
+void Bus::In_Data(ifstream& ifst) {
+    ifst >> Passenger_cap;
+}
+
+void Bus::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
+    ofst << "Bus with motor power = " << Motor_power << endl;
+    ofst << "Passenger capacity is " << Passenger_cap << endl;
+    ofst << "Fuel is " << Fuel << endl << endl;
 }
