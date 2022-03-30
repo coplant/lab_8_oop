@@ -1,58 +1,78 @@
-#ifndef HEADER_H
-#define HEADER_H
+#ifndef CONTAINER_H
+#define CONTAINER_H
 
 #include <fstream>
-#include <iostream>
-#include <string>
 
 using namespace std;
 
 
-class Car {
+enum Key {
+    TRUCK, 
+    BUS 
+};
+
+
+struct Car {
+    Key K; 
+};
+
+
+Car* In_Car(ifstream& ifst);
+
+
+void Out_Car(Car* C, ofstream& ofst);
+
+
+double Load_to_capacity_ratio(Car* C);
+
+
+struct Truck {
+    Key K; 
     int Motor_power; 
-public:
-    int Get_Motor_power();
-
-    static Car* In_Car(ifstream& ifst); 
-    virtual void In_Data(ifstream& ifst) = 0; 
-    virtual void Out_Data(int Motor_power, ofstream& ofst) = 0; 
-protected:
-    Car() {};
-};
-
-
-class Truck : public Car {
     int Load_cap; 
-public:
-    void In_Data(ifstream& ifst); 
-    void Out_Data(int Motor_power, ofstream& ofst); 
-    Truck() {};
 };
 
 
-class Bus : public Car {
+Truck* In_Truck(ifstream& ifst);
+
+
+void Out_Truck(Truck* T, ofstream& ofst);
+
+
+double Load_to_capacity_ratio_Truck(Truck* T);
+
+
+struct Bus {
+    Key K; 
+    int Motor_power; 
     short int Passenger_cap; 
-public:
-    void In_Data(ifstream& ifst); 
-    void Out_Data(int Motor_power, ofstream& ofst); 
-    Bus() {};
 };
 
+Bus* In_Bus(ifstream& ifst);
 
-struct Node {
-    Node* Next, * Prev; 
-    Car* Cont; 
-};
 
-class Container {
-    Node* Head, *Tail; 
+void Out_Bus(Bus* B, ofstream& ofst);
+
+double Load_to_capacity_ratio_Bus(Bus* B);
+
+
+struct Container {
     int Len; 
-public:
-    void In(ifstream& ifst); 
-    void Out(ofstream& ofst); 
-    void Clear(); 
-    Container(); 
-    ~Container() { Clear(); } 
+    Car* Cont; 
+    Container* Prev;
+    Container* Next; 
 };
 
-#endif //HEADER_H
+
+void Init_Container(Container* Head, Container* Tail);
+
+
+void In_Container(Container* Head, Container* Tail, ifstream& ifst);
+
+
+void Out_Container(Container* Head, ofstream& ofst);
+
+
+void Clear_Container(Container* Head, Container* Tail);
+
+#endif //CONTAINER_H
