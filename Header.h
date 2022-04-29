@@ -14,8 +14,7 @@ class Car {
 public:
     void Set_Motor_power(int _Motor_power);
     int Get_Motor_power();
-
-    void Set_Fuel(double _Fuel);
+    
     double Get_Fuel();
 
     static Car* In_Car(ifstream& ifst); //Функция ввода информации о машине
@@ -36,9 +35,6 @@ protected:
 class Truck : public Car {
     int Load_cap; //Грузоподъемность
 public:
-    void Set_Load_cap(int _Load_cap);
-    int Get_Load_cap();
-
     void In_Data(ifstream& ifst); //Функция ввода информации о грузовик
     void Out_Data(int Motor_power, double Fuel, ofstream& ofst); //Функция вывода информации о грузовике
     double Load_to_capacity_ratio(int Motor_power); //Функция подсчета отношения груза к мощности
@@ -50,9 +46,6 @@ public:
 class Bus : public Car {
     short int Passenger_cap; //Пассажировместимость
 public:
-    void Set_Passenger_cap(short int _Passenger_cap);
-    short int Get_Passenger_cap();
-
     void In_Data(ifstream& ifst); //Функция ввода информации об автобусе
     void Out_Data(int Motor_power, double Fuel, ofstream& ofst); //Функция вывода информации об автобусе
     double Load_to_capacity_ratio(int Motor_power); //Функция подсчета отношения груза к мощности
@@ -63,9 +56,6 @@ public:
 class Passenger_car : public Car {
     short int Max_speed; //Максимальная скорость
 public:
-    void Set_Max_speed(short int _Max_speed);
-    short int Get_Max_speed();
-
     void In_Data(ifstream& ifst); //Функция ввода информации о легковом автомобиле
     void Out_Data(int Motor_power, double Fuel, ofstream& ofst); //Функция вывода информации о легковом автомобиле
     double Load_to_capacity_ratio(int Motor_power); //Функция подсчета отношения груза к мощности
@@ -83,15 +73,6 @@ class Container {
     Node* Head, *Tail; //Указатели на "голову" и "хвост" контейнера
     int Len; //Размерность контейнера
 public:
-    void Set_Head(Node* _Head);
-    Node* Get_Head();
-
-    void Set_Tail(Node* _Tail);
-    Node* Get_Tail();
-
-    void Set_Len(int _Len);
-    int Get_Len();
-
     void In(ifstream& ifst); //Функция ввода элемента в контейнер
     void Out(ofstream& ofst); //Функция вывода элемента из контейнера
     void Clear(); //Функция очищения контейнера

@@ -43,9 +43,14 @@ void Container:: Out(ofstream& ofst) {
 
     for (int i = 0; i < Len; i++) {
         ofst << i << ": ";
-        Temp->Cont->Out_Data(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
+        if (Temp->Cont->Get_Motor_power() == -1) {
+            ofst << "Incorrect element!" << endl << endl;
+        }
+        else {
+            Temp->Cont->Out_Data(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
 
-        ofst << "Load to capacity ratio is = " << Temp->Cont->Load_to_capacity_ratio(Temp->Cont->Get_Motor_power()) << endl << endl;
+            ofst << "Load to capacity ratio is = " << Temp->Cont->Load_to_capacity_ratio(Temp->Cont->Get_Motor_power()) << endl << endl;
+        }
 
         if (Temp->Next) {
             Temp = Temp->Next;
@@ -99,7 +104,12 @@ void Container::Out_Only_Truck(ofstream& ofst) {
 
     for (int i = 0; i < Len; i++) {
         ofst << i << ": ";
-        Temp->Cont->Out_Only_Truck(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
+        if (Temp->Cont->Get_Motor_power() == -1) {
+            ofst << "Incorrect element!" << endl << endl;
+        }
+        else {
+            Temp->Cont->Out_Only_Truck(Temp->Cont->Get_Motor_power(), Temp->Cont->Get_Fuel(), ofst);
+        }
 
         if (Temp->Next) {
             Temp = Temp->Next;
@@ -107,32 +117,27 @@ void Container::Out_Only_Truck(ofstream& ofst) {
     }
 }
 
-void Container::Set_Head(Node* _Head) {
-    Head = _Head;
-}
-Node* Container::Get_Head() {
-    return Head;
-}
-
-void Container::Set_Tail(Node* _Tail) {
-    Tail = _Tail;
-}
-Node* Container::Get_Tail() {
-    return Tail;
-}
-
-void Container::Set_Len(int _Len) {
-    Len = _Len;
-}
-int Container::Get_Len() {
-    return Len;
-}
-
 Car* Car::In_Car(ifstream& ifst) {
     Car* C;
-    int K;
+    string Temp_Str = "";
 
-    ifst >> K;
+    getline(ifst, Temp_Str);
+
+    //Проверка того, что файл либо содержит ошибочный идентификтор Машины,
+     //либо не содержит его вовсе
+    if ((Temp_Str != "1") && (Temp_Str != "2") && (Temp_Str != "3")) {
+        //Возможно идентификатора нет, потому что это конец файл
+        if (ifst.peek() == EOF) {
+            return 0;
+        }
+        else { //В ином случае идентификатор отсутствует вовсе, либо он ошибочен
+            //Завершение программы с ошибкой
+            cout << "Input data is incomplete or incorrect!";
+            exit(1);
+        }
+    }
+
+    int K = atoi(Temp_Str.c_str());
     
     if (K == 1) {
         C = new Truck;
@@ -147,11 +152,70 @@ Car* Car::In_Car(ifstream& ifst) {
         return 0;
     }
 
-    ifst >> C->Motor_power; //Cчитываем мощность мотора
+    string Alph_num = "0123456789";
+
+    getline(ifst, Temp_Str);
+
+    if (Temp_Str == "") { //Если строка пустая
+        //Завершение программы с ошибкой
+        cout << "Input data is incomplete!";
+        exit(1);
+    }
+
+    if (Temp_Str[0] == '0') { //Если число начинается с 0
+        //Завершение программы с ошибкой
+        cout << "Input data is incorrect!";
+        exit(1);
+    }
+
+    //Цикл проверки того, что строка содержит только цифры
+    for (int i = 0; i < Temp_Str.length(); i++) {
+        if (Alph_num.find(Temp_Str[i]) == -1) {
+            //Завершение программы с ошибкой
+            cout << "Input data is incorrect!";
+            exit(1);
+        }
+    }
+
+    C->Motor_power = atoi(Temp_Str.c_str());
 
     C->In_Data(ifst);
 
-    ifst >> C->Fuel; //Считываем расход топлива
+    getline(ifst, Temp_Str);
+
+    if (Temp_Str == "") { //Если строка пустая
+        //Завершение программы с ошибкой
+        cout << "Input data is incomplete!";
+        exit(1);
+    }
+
+    //Проверка того, что строка не начианется с 0, точки или запятой, а также не заканчивается точкой или запятой
+    if ((Temp_Str[0] == 0) || (Temp_Str[0] == ',') || (Temp_Str[0] == '.') ||
+        (Temp_Str[Temp_Str.length() - 1] == ',') || (Temp_Str[Temp_Str.length() - 1] == '.')) {
+        //Завершение программы с ошибкой
+        cout << "Input data is incorrect!";
+        exit(1);
+    }
+
+    //Цикл провреки корректности записи вещественного числа
+    for (int i = 0; i < Temp_Str.length(); i++) {
+        if ((Alph_num.find(Temp_Str[i]) == -1) && (Temp_Str[i] != ',') && (Temp_Str[i] != '.')) {
+            //Завершение программы с ошибкой
+            cout << "Input data is incorrect!";
+            exit(1);
+        }
+
+        if ((Temp_Str[i] == ',') || (Temp_Str[i] == '.')) {
+            if ((Temp_Str[i - 1] == ',') || (Temp_Str[i - 1] == '.') ||
+                (Temp_Str[i + 1] == ',') || (Temp_Str[i + 1] == '.')) {
+                //Завершение программы с ошибкой
+                cout << "Input data is incorrect!";
+                exit(1);
+            }
+        }
+    }
+
+    C->Fuel = strtod(Temp_Str.c_str(), NULL);
 
     return C;
 }
@@ -162,10 +226,6 @@ void Car::Set_Motor_power(int _Motor_power) {
 
 int Car::Get_Motor_power() {
     return Motor_power;
-}
-
-void Car::Set_Fuel(double _Fuel) {
-    Fuel = _Fuel;
 }
 
 double Car::Get_Fuel() {
@@ -181,7 +241,33 @@ void Car::Out_Only_Truck(int Motor_power, double Fuel, ofstream& ofst) {
 }
 
 void Truck::In_Data(ifstream& ifst) {
-    ifst >> Load_cap;
+    string Temp_Str = "";
+    string Alph_num = "0123456789";
+    
+    getline(ifst, Temp_Str);
+
+    if (Temp_Str == "") { //Если строка пустая
+        //Завершение программы с ошибкой
+        cout << "Input data is incomplete!";
+        exit(1);
+    }
+
+    if (Temp_Str[0] == '0') { //Если число начинается с 0
+        //Завершение программы с ошибкой
+        cout << "Input data is incorrect!";
+        exit(1);
+    }
+
+    //Цикл проверки того, что строка содержит только цифры
+    for (int i = 0; i < Temp_Str.length(); i++) {
+        if (Alph_num.find(Temp_Str[i]) == -1) {
+            //Завершение программы с ошибкой
+            cout << "Input data is incorrect!";
+            exit(1);
+        }
+    }
+
+    Load_cap = atoi(Temp_Str.c_str());
 }
 
 void Truck::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
@@ -198,16 +284,34 @@ void Truck::Out_Only_Truck(int Motor_power, double Fuel, ofstream& ofst) {
     Out_Data(Motor_power, Fuel, ofst);
 }
 
-void Truck::Set_Load_cap(int _Load_cap) {
-    Load_cap = _Load_cap;
-}
-
-int Truck::Get_Load_cap() {
-    return Load_cap;
-}
-
 void Bus::In_Data(ifstream& ifst) {
-    ifst >> Passenger_cap;
+    string Temp_Str = "";
+    string Alph_num = "0123456789";
+
+    getline(ifst, Temp_Str);
+
+    if (Temp_Str == "") { //Если строка пустая
+        //Завершение программы с ошибкой
+        cout << "Input data is incomplete!";
+        exit(1);
+    }
+
+    if (Temp_Str[0] == '0') { //Если число начинается с 0
+        //Завершение программы с ошибкой
+        cout << "Input data is incorrect!";
+        exit(1);
+    }
+
+    //Цикл проверки того, что строка содержит только цифры
+    for (int i = 0; i < Temp_Str.length(); i++) {
+        if (Alph_num.find(Temp_Str[i]) == -1) {
+            //Завершение программы с ошибкой
+            cout << "Input data is incorrect!";
+            exit(1);
+        }
+    }
+
+    Passenger_cap = atoi(Temp_Str.c_str());
 }
 
 void Bus::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
@@ -220,16 +324,34 @@ double Bus::Load_to_capacity_ratio(int Motor_power) {
     return (double)(75 * Passenger_cap) / (double)Motor_power;
 }
 
-void Bus::Set_Passenger_cap(short int _Passenger_cap) {
-    Passenger_cap = _Passenger_cap;
-}
-
-short int Bus::Get_Passenger_cap() {
-    return Passenger_cap;
-}
-
 void Passenger_car::In_Data(ifstream& ifst) {
-    ifst >> Max_speed;
+    string Temp_Str = "";
+    string Alph_num = "0123456789";
+
+    getline(ifst, Temp_Str);
+
+    if (Temp_Str == "") { //Если строка пустая
+        //Завершение программы с ошибкой
+        cout << "Input data is incomplete!";
+        exit(1);
+    }
+
+    if (Temp_Str[0] == '0') { //Если число начинается с 0
+        //Завершение программы с ошибкой
+        cout << "Input data is incorrect!";
+        exit(1);
+    }
+
+    //Цикл проверки того, что строка содержит только цифры
+    for (int i = 0; i < Temp_Str.length(); i++) {
+        if (Alph_num.find(Temp_Str[i]) == -1) {
+            //Завершение программы с ошибкой
+            cout << "Input data is incorrect!";
+            exit(1);
+        }
+    }
+
+    Max_speed = atoi(Temp_Str.c_str());
 }
 
 void Passenger_car::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
@@ -240,12 +362,4 @@ void Passenger_car::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
 
 double Passenger_car::Load_to_capacity_ratio(int Motor_power) {
     return (double)(75 * 4) / (double)Motor_power; //4 пассажира по 75 кг
-}
-
-void Passenger_car::Set_Max_speed(short int _Max_speed) {
-    Max_speed = _Max_speed;
-}
-
-short int Passenger_car::Get_Max_speed() {
-    return Max_speed;
 }
