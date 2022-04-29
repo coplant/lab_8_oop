@@ -12,18 +12,19 @@ void Container::In(ifstream& ifst) {
     Node* Temp;
 
     while (!ifst.eof()) {
-        Temp = new Node(); 
+        Temp = new Node(); //Создаем новый узел
+        //Инициализируем новый узел
         Temp->Next = NULL;
         Temp->Prev = NULL;
 
         
-        if (!Len) { 
+        if (!Len) { //Запись 1-го элемента
             if ((Head->Cont = Car::In_Car(ifst))) {
                 Tail = Head;
                 Len++;
             }
         }
-        else { 
+        else { //Запись последующих элементов
             if ((Temp->Cont = Car::In_Car(ifst))) {
                 Tail->Next = Temp;
                 Temp->Prev = Tail;
@@ -106,6 +107,27 @@ void Container::Out_Only_Truck(ofstream& ofst) {
     }
 }
 
+void Container::Set_Head(Node* _Head) {
+    Head = _Head;
+}
+Node* Container::Get_Head() {
+    return Head;
+}
+
+void Container::Set_Tail(Node* _Tail) {
+    Tail = _Tail;
+}
+Node* Container::Get_Tail() {
+    return Tail;
+}
+
+void Container::Set_Len(int _Len) {
+    Len = _Len;
+}
+int Container::Get_Len() {
+    return Len;
+}
+
 Car* Car::In_Car(ifstream& ifst) {
     Car* C;
     int K;
@@ -125,17 +147,25 @@ Car* Car::In_Car(ifstream& ifst) {
         return 0;
     }
 
-    ifst >> C->Motor_power; 
+    ifst >> C->Motor_power; //Cчитываем мощность мотора
 
     C->In_Data(ifst);
 
-    ifst >> C->Fuel; 
+    ifst >> C->Fuel; //Считываем расход топлива
 
     return C;
 }
 
+void Car::Set_Motor_power(int _Motor_power) {
+    Motor_power = _Motor_power;
+}
+
 int Car::Get_Motor_power() {
     return Motor_power;
+}
+
+void Car::Set_Fuel(double _Fuel) {
+    Fuel = _Fuel;
 }
 
 double Car::Get_Fuel() {
@@ -168,6 +198,14 @@ void Truck::Out_Only_Truck(int Motor_power, double Fuel, ofstream& ofst) {
     Out_Data(Motor_power, Fuel, ofst);
 }
 
+void Truck::Set_Load_cap(int _Load_cap) {
+    Load_cap = _Load_cap;
+}
+
+int Truck::Get_Load_cap() {
+    return Load_cap;
+}
+
 void Bus::In_Data(ifstream& ifst) {
     ifst >> Passenger_cap;
 }
@@ -182,6 +220,14 @@ double Bus::Load_to_capacity_ratio(int Motor_power) {
     return (double)(75 * Passenger_cap) / (double)Motor_power;
 }
 
+void Bus::Set_Passenger_cap(short int _Passenger_cap) {
+    Passenger_cap = _Passenger_cap;
+}
+
+short int Bus::Get_Passenger_cap() {
+    return Passenger_cap;
+}
+
 void Passenger_car::In_Data(ifstream& ifst) {
     ifst >> Max_speed;
 }
@@ -193,5 +239,13 @@ void Passenger_car::Out_Data(int Motor_power, double Fuel, ofstream& ofst) {
 }
 
 double Passenger_car::Load_to_capacity_ratio(int Motor_power) {
-    return (double)(75 * 4) / (double)Motor_power; 
+    return (double)(75 * 4) / (double)Motor_power; //4 пассажира по 75 кг
+}
+
+void Passenger_car::Set_Max_speed(short int _Max_speed) {
+    Max_speed = _Max_speed;
+}
+
+short int Passenger_car::Get_Max_speed() {
+    return Max_speed;
 }
